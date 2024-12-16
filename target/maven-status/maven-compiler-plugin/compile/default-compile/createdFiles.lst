@@ -1,0 +1,3 @@
+com\example\memapp\MemAppApplication.class
+com\example\memapp\controller\MainController.class
+com\example\memapp\controller\MainController$PageEntry.class

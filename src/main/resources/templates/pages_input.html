@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducere MV_Page și MO_Page</title>
+    <style>
+    /* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f9f4;
+    color: #2e3d2f;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2 {
+    color: #184d47; /* Verde închis */
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 2.2rem;
+}
+
+h2 {
+    font-size: 1.6rem;
+    border-bottom: 3px solid #4c9a81;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2f5d50;
+}
+
+input[type="number"], input[type="text"] {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9fff9;
+    transition: border-color 0.3s ease-in-out;
+}
+
+input[type="number"]:focus, input[type="text"]:focus {
+    border-color: #4c9a81; /* Verde accent */
+    outline: none;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #4c9a81;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #3c7a68;
+    transform: scale(1.05);
+}
+
+/* Error messages */
+.error {
+    color: #d9534f;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #4c9a81; /* Verde accent */
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #eef7ee;
+}
+
+tr:hover {
+    background-color: #dff1df;
+}
+
+/* Links styled as buttons */
+a.button {
+    display: inline-block;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #4c9a81;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    margin-top: 20px;
+}
+
+a.button:hover {
+    background-color: #3c7a68;
+    transform: scale(1.05);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+} 
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Introduceți MV_Page și MO_Page</h1>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+        <form method="POST" action="/compute">
+            <!-- Inputuri ascunse pentru a transfera datele -->
+            <input type="hidden" name="MV_kb" th:value="${MV_kb}">
+            <input type="hidden" name="MO_kb" th:value="${MO_kb}">
+            <input type="hidden" name="page_kb" th:value="${page_kb}">
+            <input type="hidden" name="num_pages_virtual" th:value="${num_pages_virtual}">
+            <input type="hidden" name="num_pages_physical" th:value="${num_pages_physical}">
+
+            <h2>Număr pagini virtuale: <span th:text="${num_pages_virtual}"></span></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pagina Virtuală</th>
+                        <th>Interval Adrese (start - end)</th>
+                        <th>MV_Page</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="row : ${table}">
+                        <td th:text="${row.v_idx}"></td>
+                        <td th:text="${row.start_addr} + ' - ' + ${row.end_addr}"></td>
+                        <td>
+                            <input type="number" th:name="${'mv_page_' + row.v_idx}" placeholder="MV_Page" required>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Introduceți MO_Page pentru primele <span th:text="${num_pages_physical}"></span> pagini:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pagina Virtuală</th>
+                        <th>MO_Page</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="i : ${#numbers.sequence(0, num_pages_physical - 1)}">
+                        <td th:text="${i}"></td>
+                        <td>
+                            <input type="number" th:name="${'mo_page_' + i}" placeholder="MO_Page" required>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Introduceți o adresă virtuală pentru calcul (în bytes):</h2>
+            <input type="number" name="address" placeholder="Adresa virtuală" required><br><br>
+
+            <button type="submit">Calculează</button>
+        </form>
+    </div>
+</body>
+</html>
